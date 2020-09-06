@@ -1,6 +1,8 @@
 package com.lls.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.lls.aspect.BusinessType;
+import com.lls.aspect.Log;
 import com.lls.config.aspect.ReturnMsg;
 import com.lls.model.User;
 import com.lls.model.UserSearchVo;
@@ -24,6 +26,7 @@ public class UserController {
 
     @PostMapping
     @ApiOperation(value = "addUser",notes = "addUser")
+    @Log(title = "addUser",buinessType = BusinessType.INSERT)
     public ReturnMsg insertUser(@ApiParam(name = "user",value="user") @RequestBody User user){
         log.info("addUser",user);
         ControllerUtil.requireNotEmpty(user.getName(),"name cannot be null");
@@ -44,7 +47,7 @@ public class UserController {
 
     @DeleteMapping
     @ApiOperation(value = "delUser",notes = "delUser")
-    public ReturnMsg delUser(@ApiParam(name = "id",value="id") @RequestParam(value = "id",required = true)String id){
+    public ReturnMsg delUser(@ApiParam(name = "id",value="id") @RequestParam(value = "id",required = false)String id){
         log.info("delUser",id);
         ControllerUtil.requireNotEmpty(id,"id cannot be null");
 
@@ -54,17 +57,19 @@ public class UserController {
 
     @GetMapping
     @ApiOperation(value = "searchUser",notes = "searchUser")
+    @Log(title = "addUser",buinessType = BusinessType.SELECT)
     public ReturnMsg searchUser(
-            @ApiParam(name = "name",value="name") @RequestParam(value = "name",required = true)String name,
-            @ApiParam(name = "age",value="age") @RequestParam(value = "age",required = true)Integer age,
-            @ApiParam(name = "beginDate",value="beginDate") @RequestParam(value = "beginDate",required = true)String beginDate,
-            @ApiParam(name = "endDate",value="endDate") @RequestParam(value = "endDate",required = true)String endDate,
-            @ApiParam(name = "page",value="page") @RequestParam(value = "page",required = true)Integer page,
-            @ApiParam(name = "rows",value="rows") @RequestParam(value = "rows",required = true)Integer rows){
+            @ApiParam(name = "name",value="name") @RequestParam(value = "name",required = false)String name,
+            @ApiParam(name = "age",value="age") @RequestParam(value = "age",required = false)Integer age,
+            @ApiParam(name = "beginDate",value="beginDate") @RequestParam(value = "beginDate",required = false)String beginDate,
+            @ApiParam(name = "endDate",value="endDate") @RequestParam(value = "endDate",required = false)String endDate,
+            @ApiParam(name = "page",value="page") @RequestParam(value = "page",required = false)Integer page,
+            @ApiParam(name = "rows",value="rows") @RequestParam(value = "rows",required = false)Integer rows){
 
         UserSearchVo userSearchVo = new UserSearchVo(name,age,beginDate,endDate,page,rows);
         log.info("searchUser",userSearchVo);
-        PageInfo<User> pageInfo = userService.search(userSearchVo);
+//        PageInfo<User> pageInfo = userService.search(userSearchVo);
+        PageInfo<User> pageInfo = null;
         //TODO ---
         return ReturnMsg.createSuccess().data(pageInfo);
     }
